@@ -1,16 +1,24 @@
-// backend/server.js
-
 const express = require('express');
 const mongoose = require('mongoose');
 const studentRoutes = require('./routes/student');
 const cors = require('cors');
-require('dotenv').config(); // for environment variables
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// CORS setup
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://student-management-system-1-stvv.onrender.com'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
+// Middlewares
 app.use(express.json());
 
 // Routes
@@ -24,10 +32,10 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => {
   console.log('Connected to MongoDB Atlas');
   app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 })
 .catch((err) => {
   console.error('MongoDB connection error:', err.message);
-  process.exit(1); // Exit process with failure
+  process.exit(1);
 });
